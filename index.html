@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Верстай ярко!</title>
+    <title>Верстай ярко! — оптимизированная версия</title>
     <style>
-        /* Базовые стили */
+        /* Базовые стили (без изменений, но для чистоты оставим) */
         * {
             margin: 0;
             padding: 0;
@@ -103,6 +103,17 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
             cursor: pointer;
             border: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            pointer-events: none;
         }
         
         /* Секция игры */
@@ -144,6 +155,7 @@
             border-radius: 10px;
             overflow: hidden;
             margin-bottom: 20px;
+            cursor: none; /* скрываем курсор мыши, чтобы не мешал */
         }
         
         .falling-tag {
@@ -155,6 +167,8 @@
             color: #333;
             user-select: none;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            white-space: nowrap;
+            pointer-events: none; /* чтобы не перехватывать события мыши */
         }
         
         .basket {
@@ -164,12 +178,13 @@
             height: 60px;
             background: linear-gradient(45deg, #a1c4fd, #c2e9fb);
             border-radius: 10px 10px 0 0;
-            transition: left 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             color: #333;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+            pointer-events: none; /* чтобы мышь проходила сквозь, но управление через mousemove */
         }
         
         .controls {
@@ -182,6 +197,7 @@
             font-size: 1.2rem;
             margin-top: 20px;
             min-height: 30px;
+            font-weight: 600;
         }
         
         /* Футер */
@@ -208,6 +224,11 @@
             .game-area {
                 height: 300px;
             }
+
+            .basket {
+                width: 90px;
+                height: 50px;
+            }
         }
     </style>
 </head>
@@ -230,7 +251,9 @@
     <section class="hero" id="home">
         <div class="container">
             <div class="hero-content">
-                <a href="#game" class="btn">Поиграть в игру</a>
+                <h1>Вёрстка с душой</h1>
+                <p>Поймай как можно больше HTML-тегов за 30 секунд</p>
+                <a href="#game" class="btn">Поехали!</a>
             </div>
         </div>
     </section>
@@ -242,14 +265,14 @@
             <div class="game-container">
                 <div class="game-info">
                     <div class="score">Счет: <span id="score">0</span></div>
-                    <div class="timer">Время: <span id="timer">60</span>с</div>
+                    <div class="timer">Время: <span id="timer">30</span>с</div>
                 </div>
                 <div class="game-area" id="gameArea">
-                    <div class="basket" id="basket">Корзина</div>
+                    <div class="basket" id="basket">🧺 Корзина</div>
                 </div>
-                <div class="message" id="message">Поймайте как можно больше HTML-тегов за 60 секунд!</div>
+                <div class="message" id="message">⚡ Двигай мышкой, чтобы ловить теги ⚡</div>
                 <div class="controls">
-                    <button class="btn" id="startBtn">Начать игру</button>
+                    <button class="btn" id="startBtn">Старт</button>
                 </div>
             </div>
         </div>
@@ -264,178 +287,237 @@
     </footer>
 
     <script>
-        // Элементы игры
-        const gameArea = document.getElementById('gameArea');
-        const basket = document.getElementById('basket');
-        const scoreElement = document.getElementById('score');
-        const timerElement = document.getElementById('timer');
-        const messageElement = document.getElementById('message');
-        const startBtn = document.getElementById('startBtn');
-        
-        // Переменные игры
-        let score = 0;
-        let timer = 60;
-        let gameInterval;
-        let tagInterval;
-        let isGameActive = false;
-        let fallingTags = [];
-        
-        // HTML-теги для игры
-        const htmlTags = ['<div>', '<p>', '<span>', '<h1>', '<a>', '<img>', '<ul>', '<li>', '<header>', '<footer>'];
-        
-        // Управление корзиной
-        document.addEventListener('mousemove', (e) => {
-            if (!isGameActive) return;
+        (function() {
+            // Элементы игры
+            const gameArea = document.getElementById('gameArea');
+            const basket = document.getElementById('basket');
+            const scoreElement = document.getElementById('score');
+            const timerElement = document.getElementById('timer');
+            const messageElement = document.getElementById('message');
+            const startBtn = document.getElementById('startBtn');
             
-            const gameAreaRect = gameArea.getBoundingClientRect();
-            const basketWidth = basket.offsetWidth;
-            let newPosition = e.clientX - gameAreaRect.left - basketWidth / 2;
+            // Параметры игры
+            const INIT_TIME = 30;           // ⏱️ время игры уменьшено вдвое (было 60)
+            const TAG_WIDTH = 70;            // примерная ширина тега (для ограничения появления)
+            const BASKET_WIDTH = 120;         // ширина корзины (должна совпадать с CSS)
             
-            // Ограничение движения в пределах игровой области
-            if (newPosition < 0) newPosition = 0;
-            if (newPosition > gameArea.offsetWidth - basketWidth) newPosition = gameArea.offsetWidth - basketWidth;
+            // Переменные состояния
+            let score = 0;
+            let timeLeft = INIT_TIME;
+            let gameActive = false;
             
-            basket.style.left = `${newPosition}px`;
-        });
-        
-        // Создание падающего тега
-        function createFallingTag() {
-            if (!isGameActive) return;
+            // Идентификаторы интервалов
+            let timerInterval = null;
+            let spawnInterval = null;
+            let updateInterval = null;
             
-            const tag = document.createElement('div');
-            tag.className = 'falling-tag';
-            tag.textContent = htmlTags[Math.floor(Math.random() * htmlTags.length)];
+            // Массив падающих тегов
+            let fallingTags = [];
             
-            // Случайная позиция вверху игровой области
-            const maxLeft = gameArea.offsetWidth - 80;
-            const leftPosition = Math.floor(Math.random() * maxLeft);
-            tag.style.left = `${leftPosition}px`;
-            tag.style.top = '0px';
+            // Набор тегов
+            const htmlTags = ['<div>', '<p>', '<span>', '<h1>', '<a>', '<img>', '<ul>', '<li>', '<header>', '<footer>'];
             
-            gameArea.appendChild(tag);
-            fallingTags.push({
-                element: tag,
-                left: leftPosition,
-                top: 0,
-                speed: 2 + Math.random() * 2
+            // ---- ОПТИМИЗАЦИЯ: корректная проверка столкновения (пересечение прямоугольников) ----
+            function isColliding(rect1, rect2) {
+                return rect1.left < rect2.right &&
+                       rect1.right > rect2.left &&
+                       rect1.top < rect2.bottom &&
+                       rect1.bottom > rect2.top;
+            }
+            
+            // ---- Создание нового тега ----
+            function createTag() {
+                if (!gameActive) return;
+                
+                const tag = document.createElement('div');
+                tag.className = 'falling-tag';
+                tag.textContent = htmlTags[Math.floor(Math.random() * htmlTags.length)];
+                
+                // Случайная позиция по горизонтали, чтобы тег не вылезал за края
+                const maxLeft = Math.max(0, gameArea.offsetWidth - TAG_WIDTH);
+                const left = Math.floor(Math.random() * maxLeft);
+                
+                tag.style.left = left + 'px';
+                tag.style.top = '0px';
+                
+                gameArea.appendChild(tag);
+                
+                fallingTags.push({
+                    element: tag,
+                    left: left,
+                    top: 0,
+                    speed: 1 + Math.random() * 2.5,  // небольшая вариация скорости
+                    width: tag.offsetWidth || TAG_WIDTH,
+                    height: tag.offsetHeight || 30
+                });
+            }
+            
+            // ---- Обновление позиций и проверка столкновений ----
+            function updateGame() {
+                if (!gameActive) return;
+                
+                // Получаем актуальные координаты корзины относительно gameArea
+                const basketRect = basket.getBoundingClientRect();
+                const gameAreaRect = gameArea.getBoundingClientRect();
+                
+                // Пересчитываем координаты корзины внутри gameArea
+                const basketInGame = {
+                    left: basketRect.left - gameAreaRect.left,
+                    right: basketRect.right - gameAreaRect.left,
+                    top: basketRect.top - gameAreaRect.top,
+                    bottom: basketRect.bottom - gameAreaRect.top
+                };
+                
+                for (let i = fallingTags.length - 1; i >= 0; i--) {
+                    const t = fallingTags[i];
+                    
+                    // Двигаем вниз
+                    t.top += t.speed;
+                    t.element.style.top = t.top + 'px';
+                    
+                    // Получаем прямоугольник тега (приблизительно, можно точнее через getBoundingClientRect, но для скорости оставим так)
+                    const tagRect = {
+                        left: t.left,
+                        right: t.left + t.width,
+                        top: t.top,
+                        bottom: t.top + t.height
+                    };
+                    
+                    // Проверка на столкновение с корзиной
+                    if (isColliding(tagRect, basketInGame)) {
+                        // Пойман!
+                        score += 10;
+                        scoreElement.textContent = score;
+                        messageElement.textContent = '🔥 +10 очков!';
+                        
+                        t.element.remove();
+                        fallingTags.splice(i, 1);
+                        continue;
+                    }
+                    
+                    // Если тег улетел за нижнюю границу
+                    if (t.top > gameArea.offsetHeight) {
+                        t.element.remove();
+                        fallingTags.splice(i, 1);
+                    }
+                }
+            }
+            
+            // ---- Очистка игры ----
+            function clearGame() {
+                // Удаляем все теги из DOM и массива
+                fallingTags.forEach(t => t.element.remove());
+                fallingTags = [];
+                
+                // Сбрасываем счёт и таймер на экране
+                score = 0;
+                timeLeft = INIT_TIME;
+                scoreElement.textContent = score;
+                timerElement.textContent = timeLeft;
+                
+                // Сообщение
+                messageElement.textContent = '⚡ Двигай мышкой, чтобы ловить теги ⚡';
+            }
+            
+            // ---- Завершение игры ----
+            function stopGame() {
+                gameActive = false;
+                
+                // Очищаем все интервалы
+                if (timerInterval) clearInterval(timerInterval);
+                if (spawnInterval) clearInterval(spawnInterval);
+                if (updateInterval) clearInterval(updateInterval);
+                
+                timerInterval = spawnInterval = updateInterval = null;
+                
+                startBtn.disabled = false;
+                startBtn.textContent = 'Играть снова';
+                
+                // Финальное сообщение
+                let finalMsg = `⏰ Игра окончена! Ваш счёт: ${score}. `;
+                if (score >= 200) finalMsg += 'Ты — гуру верстки!';
+                else if (score >= 100) finalMsg += 'Неплохо, но можно ещё!';
+                else finalMsg += 'Попробуй ещё разок!';
+                
+                messageElement.textContent = finalMsg;
+            }
+            
+            // ---- Старт игры ----
+            function startGame() {
+                if (gameActive) return;
+                
+                // Подчищаем предыдущие запуски
+                clearGame();
+                
+                gameActive = true;
+                startBtn.disabled = true;
+                startBtn.textContent = 'Игра идёт...';
+                
+                // Таймер обратного отсчёта
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    timerElement.textContent = timeLeft;
+                    
+                    if (timeLeft <= 0) {
+                        stopGame();
+                    }
+                }, 1000);
+                
+                // Появление новых тегов каждые 0.8 секунды (чуть чаще для динамики)
+                spawnInterval = setInterval(() => {
+                    createTag();
+                }, 800);
+                
+                // Обновление игры (~60 FPS)
+                updateInterval = setInterval(() => {
+                    updateGame();
+                }, 16); // ~60 кадров в секунду
+            }
+            
+            // ---- Управление корзиной мышью ----
+            function moveBasket(e) {
+                if (!gameActive) return;
+                
+                const gameAreaRect = gameArea.getBoundingClientRect();
+                const basketWidth = basket.offsetWidth;
+                
+                // Вычисляем новую позицию левого края корзины
+                let newLeft = e.clientX - gameAreaRect.left - basketWidth / 2;
+                
+                // Ограничиваем, чтобы корзина не выходила за границы поля
+                newLeft = Math.max(0, Math.min(newLeft, gameArea.offsetWidth - basketWidth));
+                
+                basket.style.left = newLeft + 'px';
+            }
+            
+            // ---- Обработчики событий ----
+            gameArea.addEventListener('mousemove', moveBasket);
+            
+            // Также учитываем касания для мобильных устройств (опционально)
+            gameArea.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                moveBasket(touch);
             });
-        }
-        
-        // Обновление позиции тегов
-        function updateTags() {
-            if (!isGameActive) return;
             
-            const basketRect = basket.getBoundingClientRect();
-            const gameAreaRect = gameArea.getBoundingClientRect();
+            startBtn.addEventListener('click', startGame);
             
-            for (let i = fallingTags.length - 1; i >= 0; i--) {
-                const tag = fallingTags[i];
-                tag.top += tag.speed;
-                tag.element.style.top = `${tag.top}px`;
-                
-                // Проверка столкновения с корзиной
-                const tagRect = {
-                    left: tag.left,
-                    top: tag.top,
-                    right: tag.left + 60,
-                    bottom: tag.top + 30
-                };
-                
-                const basketRectAdjusted = {
-                    left: parseInt(basket.style.left) || 0,
-                    top: gameArea.offsetHeight - 70,
-                    right: (parseInt(basket.style.left) || 0) + 120,
-                    bottom: gameArea.offsetHeight
-                };
-                
-                if (tagRect.bottom >= basketRectAdjusted.top &&
-                    tagRect.left >= basketRectAdjusted.left - 20 &&
-                    tagRect.right <= basketRectAdjusted.right + 20) {
-                    // Тег пойман
-                    score += 10;
-                    scoreElement.textContent = score;
-                    tag.element.remove();
-                    fallingTags.splice(i, 1);
-                    messageElement.textContent = 'Отлично! +10 очков';
-                    continue;
+            // При изменении размера окна пересчитываем положение корзины (чтобы не уехала за границы)
+            window.addEventListener('resize', () => {
+                if (!gameActive) return;
+                // Просто сбрасываем left в допустимые пределы, но оставляем примерно ту же пропорцию
+                const gameAreaRect = gameArea.getBoundingClientRect();
+                const basketWidth = basket.offsetWidth;
+                const currentLeft = parseInt(basket.style.left) || 0;
+                const maxLeft = gameArea.offsetWidth - basketWidth;
+                if (currentLeft > maxLeft) {
+                    basket.style.left = maxLeft + 'px';
                 }
-                
-                // Если тег упал ниже корзины
-                if (tag.top > gameArea.offsetHeight) {
-                    tag.element.remove();
-                    fallingTags.splice(i, 1);
-                }
-            }
-        }
-        
-        // Начало игры
-        startBtn.addEventListener('click', () => {
-            if (isGameActive) return;
+            });
             
-            // Сброс игры
-            score = 0;
-            timer = 60;
-            scoreElement.textContent = score;
-            timerElement.textContent = timer;
-            messageElement.textContent = 'Ловите HTML-теги!';
-            
-            // Очистка игровой области
-            fallingTags.forEach(tag => tag.element.remove());
-            fallingTags = [];
-            
-            // Запуск игры
-            isGameActive = true;
-            startBtn.disabled = true;
-            startBtn.textContent = 'Игра идет...';
-            
-            // Таймер игры
-            gameInterval = setInterval(() => {
-                timer--;
-                timerElement.textContent = timer;
-                
-                if (timer <= 0) {
-                    endGame();
-                }
-            }, 1000);
-            
-            // Создание тегов
-            tagInterval = setInterval(createFallingTag, 1000);
-            
-            // Игровой цикл
-            const gameLoop = setInterval(() => {
-                if (!isGameActive) {
-                    clearInterval(gameLoop);
-                    return;
-                }
-                updateTags();
-            }, 50);
-        });
-        
-        // Завершение игры
-        function endGame() {
-            isGameActive = false;
-            clearInterval(gameInterval);
-            clearInterval(tagInterval);
-            
-            startBtn.disabled = false;
-            startBtn.textContent = 'Играть снова';
-            
-            // Очистка тегов
-            fallingTags.forEach(tag => tag.element.remove());
-            fallingTags = [];
-            
-            // Сообщение о результате
-            let message = `Игра окончена! Ваш счет: ${score} `;
-            if (score >= 200) {
-                message += 'Отличный результат! Вы мастер верстки!';
-            } else if (score >= 100) {
-                message += 'Хороший результат! Продолжайте в том же духе!';
-            } else {
-                message += 'Попробуйте еще раз, чтобы улучшить результат!';
-            }
-            
-            messageElement.textContent = message;
-        }
+            // Дополнительно: отключаем контекстное меню на поле игры (чтобы не мешало)
+            gameArea.addEventListener('contextmenu', (e) => e.preventDefault());
+        })();
     </script>
 </body>
 </html>
