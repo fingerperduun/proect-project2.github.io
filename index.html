@@ -1,523 +1,436 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Верстай ярко! — оптимизированная версия</title>
-    <style>
-        /* Базовые стили (без изменений, но для чистоты оставим) */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #fff;
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        header {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 20px 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-        }
-        
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            font-size: 28px;
-            font-weight: 800;
-            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .nav-links {
-            display: flex;
-            list-style: none;
-        }
-        
-        .nav-links li {
-            margin-left: 30px;
-        }
-        
-        .nav-links a {
-            color: #fff;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        
-        /* Герой секция */
-        .hero {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            text-align: center;
-            padding-top: 80px;
-        }
-        
-        .hero-content h1 {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #a1c4fd, #c2e9fb);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .hero-content p {
-            font-size: 1.5rem;
-            margin-bottom: 30px;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .btn {
-            display: inline-block;
-            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
-            color: #333;
-            padding: 15px 35px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.1rem;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            cursor: pointer;
-            border: none;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Верстай ярко! — Изучение HTML-тегов</title>
+<meta name="description" content="Обучающая игра: лови теги, набирай 600+ очков и разблокируй карточки с подробным объяснением!">
+<style>
+/* === БАЗОВЫЕ СТИЛИ === */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+:root{
+--primary:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+--accent:linear-gradient(45deg,#ff9a9e,#fad0c4);
+--info:linear-gradient(45deg,#a1c4fd,#c2e9fb);
+--success:linear-gradient(45deg,#84fab0,#8fd3f4);
+--warning:linear-gradient(45deg,#f6d365,#fda085);
+--rare:linear-gradient(45deg,#f093fb,#f5576c);
+--glass:rgba(255,255,255,0.12);
+--glass-border:rgba(255,255,255,0.25);
+--shadow:0 8px 32px rgba(0,0,0,0.2)
+}
+html{scroll-behavior:smooth}
+body{background:var(--primary);color:#fff;line-height:1.6;min-height:100vh}
+.container{max-width:1200px;margin:0 auto;padding:0 20px}
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 25px rgba(0,0,0,0.3);
-        }
+/* === ШАПКА === */
+header{background:rgba(0,0,0,0.25);padding:12px 0;position:fixed;width:100%;top:0;z-index:1000;backdrop-filter:blur(12px);border-bottom:1px solid var(--glass-border)}
+nav{display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:22px;font-weight:800;background:var(--accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:flex;align-items:center;gap:6px}
+.nav-links{display:flex;list-style:none;gap:20px}
+.nav-links a{color:#fff;text-decoration:none;font-weight:600;padding:8px 14px;border-radius:10px;transition:background 0.3s}
+.nav-links a:hover{background:rgba(255,255,255,0.15)}
+.nav-toggle{display:none;font-size:24px;background:none;border:none;color:#fff;cursor:pointer}
 
-        .btn:disabled {
-            opacity: 0.5;
-            pointer-events: none;
-        }
-        
-        /* Секция игры */
-        .game-section {
-            padding: 100px 0;
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 60px;
-            background: linear-gradient(45deg, #a1c4fd, #c2e9fb);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .game-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 30px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .game-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-        }
-        
-        .game-area {
-            position: relative;
-            height: 400px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 20px;
-            cursor: none; /* скрываем курсор мыши, чтобы не мешал */
-        }
-        
-        .falling-tag {
-            position: absolute;
-            padding: 10px 15px;
-            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
-            border-radius: 5px;
-            font-weight: bold;
-            color: #333;
-            user-select: none;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            white-space: nowrap;
-            pointer-events: none; /* чтобы не перехватывать события мыши */
-        }
-        
-        .basket {
-            position: absolute;
-            bottom: 10px;
-            width: 120px;
-            height: 60px;
-            background: linear-gradient(45deg, #a1c4fd, #c2e9fb);
-            border-radius: 10px 10px 0 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #333;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
-            pointer-events: none; /* чтобы мышь проходила сквозь, но управление через mousemove */
-        }
-        
-        .controls {
-            text-align: center;
-            margin-top: 20px;
-        }
-        
-        .message {
-            text-align: center;
-            font-size: 1.2rem;
-            margin-top: 20px;
-            min-height: 30px;
-            font-weight: 600;
-        }
-        
-        /* Футер */
-        footer {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 40px 0;
-            text-align: center;
-        }
-        
-        /* Адаптивность */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .hero-content h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero-content p {
-                font-size: 1.2rem;
-            }
-            
-            .game-area {
-                height: 300px;
-            }
+/* === ГЕРОЙ === */
+.hero{min-height:100vh;display:flex;align-items:center;text-align:center;padding-top:80px;padding-bottom:40px}
+.hero-content h1{font-size:clamp(2.3rem,7vw,3.8rem);margin-bottom:18px;background:var(--accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.85}}
+.hero-content p{font-size:clamp(1.05rem,2.8vw,1.4rem);margin-bottom:25px;max-width:680px;margin-left:auto;margin-right:auto;opacity:0.97}
+.hero-highlight{background:rgba(255,255,255,0.15);padding:15px 25px;border-radius:14px;margin:20px 0;border:1px solid var(--glass-border);display:inline-block}
+.hero-highlight strong{color:#f6d365}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#222;padding:14px 32px;border-radius:50px;text-decoration:none;font-weight:700;font-size:1.05rem;box-shadow:var(--shadow);cursor:pointer;border:none;transition:all 0.3s}
+.btn:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(0,0,0,0.3)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:0.6;transform:none;cursor:not-allowed}
+.btn-secondary{background:var(--info);margin-left:12px}
 
-            .basket {
-                width: 90px;
-                height: 50px;
-            }
-        }
-    </style>
+/* === ИНФО ОБ HTML === */
+.html-info-section{background:rgba(0,0,0,0.2);padding:60px 0}
+.html-info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px;margin-top:30px}
+.html-info-card{background:var(--glass);border-radius:16px;padding:25px;border:1px solid var(--glass-border);transition:transform 0.3s}
+.html-info-card:hover{transform:translateY(-5px)}
+.html-info-card h3{font-size:1.3rem;margin-bottom:15px;display:flex;align-items:center;gap:10px}
+.html-info-card p{font-size:0.95rem;opacity:0.9;line-height:1.7}
+.html-info-card ul{margin-top:15px;padding-left:20px}
+.html-info-card li{margin:8px 0;font-size:0.9rem;opacity:0.85}
+
+/* === СЕКЦИИ === */
+section{padding:70px 0}
+.section-title{text-align:center;font-size:clamp(1.7rem,4.5vw,2.4rem);margin-bottom:15px;background:var(--info);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.section-subtitle{text-align:center;font-size:1.05rem;opacity:0.92;max-width:620px;margin:0 auto 45px}
+
+/* === ИГРА === */
+.game-section{background:rgba(255,255,255,0.08)}
+.game-container{max-width:800px;margin:0 auto;background:var(--glass);border-radius:20px;padding:22px;backdrop-filter:blur(10px);border:1px solid var(--glass-border);box-shadow:var(--shadow)}
+.game-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px}
+.game-stats{display:flex;gap:18px;font-size:1.05rem}
+.game-stats span{font-weight:700;background:var(--info);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.target-badge{background:var(--warning);color:#222;padding:6px 16px;border-radius:22px;font-weight:700;font-size:0.95rem;display:flex;align-items:center;gap:6px}
+.game-area{position:relative;height:400px;background:rgba(0,0,0,0.28);border-radius:15px;overflow:hidden;margin-bottom:18px;cursor:none;border:2px solid var(--glass-border);touch-action:none;will-change:contents}
+.falling-tag{position:absolute;padding:8px 14px;border-radius:10px;font-weight:600;font-size:0.92rem;color:#222;user-select:none;box-shadow:0 5px 15px rgba(0,0,0,0.25);white-space:nowrap;pointer-events:none;will-change:top}
+.falling-tag.rare{background:var(--rare);animation:glow 2s ease-in-out infinite alternate}
+@keyframes glow{from{box-shadow:0 4px 15px rgba(240,147,251,0.5)}to{box-shadow:0 8px 25px rgba(245,87,108,0.8)}}
+.basket{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);width:120px;height:60px;background:var(--info);border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:center;font-weight:700;color:#222;box-shadow:0 -4px 18px rgba(0,0,0,0.3);pointer-events:none;transition:transform 0.12s ease;will-change:left,transform}
+.basket.caught{animation:catch 0.28s ease}
+@keyframes catch{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.08)}}
+.message{text-align:center;font-size:1.05rem;margin:12px 0;min-height:26px;font-weight:600;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,0.12)}
+.message.success{background:rgba(132,250,176,0.22);color:#84fab0}
+.message.warning{background:rgba(246,211,101,0.22);color:#f6d365}
+.message.reward{background:var(--rare);color:#fff;animation:glow 1.5s ease-in-out infinite alternate}
+.controls{text-align:center;display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.game-hint{text-align:center;margin-top:18px;padding:12px;background:rgba(255,255,255,0.1);border-radius:12px;font-size:0.95rem;opacity:0.9}
+.game-hint strong{color:#f6d365}
+
+/* === ПРАВИЛА === */
+.rules-section{background:rgba(0,0,0,0.18)}
+.rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px;margin-top:28px}
+.rule-card{background:var(--glass);padding:24px;border-radius:16px;border:1px solid var(--glass-border);text-align:center;transition:transform 0.3s}
+.rule-card:hover{transform:translateY(-4px)}
+.rule-icon{font-size:2.4rem;margin-bottom:14px;display:block}
+.rule-card h3{margin-bottom:10px;font-size:1.25rem}
+.rule-card p{opacity:0.92;font-size:0.95rem}
+
+/* === БИБЛИОТЕКА ТЕГОВ === */
+.tags-section{background:rgba(255,255,255,0.09);position:relative}
+.tags-intro{text-align:center;max-width:700px;margin:0 auto 35px;padding:20px;background:rgba(255,255,255,0.12);border-radius:16px;border-left:4px solid #f6d365}
+.tags-categories{display:flex;justify-content:center;gap:12px;margin-bottom:28px;flex-wrap:wrap}
+.category-btn{padding:10px 22px;background:var(--glass);border:1px solid var(--glass-border);border-radius:28px;color:#fff;cursor:pointer;font-weight:600;transition:all 0.3s}
+.category-btn.active,.category-btn:hover{background:var(--info);color:#222}
+.tags-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.tag-card{background:var(--glass);border-radius:18px;border:1px solid var(--glass-border);overflow:hidden;transition:all 0.35s;cursor:pointer;position:relative}
+.tag-card:hover{transform:translateY(-5px);border-color:rgba(255,255,255,0.5);box-shadow:0 12px 35px rgba(0,0,0,0.3)}
+.tag-card.rare{border-color:#f5576c}
+.tag-card.rare::before{content:"⭐";position:absolute;top:12px;right:15px;font-size:1.4rem;z-index:2}
+.tag-header{padding:18px 20px 12px;background:rgba(0,0,0,0.2);border-bottom:1px solid var(--glass-border)}
+.tag-name{font-size:1.5rem;font-weight:800;color:#ff9a9e;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.tag-category{display:inline-block;padding:4px 12px;background:var(--info);color:#222;border-radius:20px;font-size:0.8rem;font-weight:600}
+.tag-body{padding:16px 20px}
+.tag-desc{font-size:0.95rem;margin-bottom:14px;line-height:1.5;opacity:0.95}
+.tag-details{background:rgba(0,0,0,0.18);border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:0.9rem}
+.tag-details strong{color:#a1c4fd}
+.tag-example{background:#1a1a2e;border-radius:8px;padding:12px;font-family:'Consolas',monospace;font-size:0.85rem;color:#84fab0;overflow-x:auto;border-left:3px solid #84fab0;white-space:pre-wrap}
+.tag-points{display:flex;justify-content:space-between;align-items:center;padding:10px 20px;background:rgba(255,255,255,0.08);border-top:1px solid var(--glass-border);font-size:0.9rem}
+.tag-points .points{font-weight:700;background:var(--accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tag-card.locked{opacity:0.7;filter:blur(1px)}
+.tag-card.locked .tag-body,.tag-card.locked .tag-points{display:none}
+.tag-card.locked::after{content:"🔒 Набери 600+ очков";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.7);padding:10px 20px;border-radius:10px;font-weight:600;z-index:3}
+
+/* === FOOTER === */
+footer{background:rgba(0,0,0,0.4);padding:45px 0 28px;text-align:center}
+.footer-content{max-width:580px;margin:0 auto}
+.footer-content h2{margin-bottom:18px;font-size:1.7rem}
+.contact-info{margin:18px 0;font-size:1.05rem}
+.contact-info a{color:#a1c4fd;text-decoration:none}
+.copyright{opacity:0.82;font-size:0.9rem;margin-top:28px;padding-top:20px;border-top:1px solid var(--glass-border)}
+
+/* === МОДАЛКА === */
+.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:2000;justify-content:center;align-items:center;padding:20px}
+.modal.active{display:flex;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-content{background:linear-gradient(145deg,#2a2a4a,#1a1a3a);border-radius:22px;max-width:520px;width:100%;border:2px solid #f6d365;box-shadow:0 20px 60px rgba(246,211,101,0.3);animation:slideUp 0.4s ease;position:relative;overflow:hidden}
+@keyframes slideUp{from{transform:translateY(50px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-header{background:var(--rare);padding:18px 24px;text-align:center;font-weight:800;font-size:1.3rem;color:#fff}
+.modal-body{padding:24px}
+.modal-tag{font-size:2.2rem;font-weight:800;color:#ff9a9e;text-align:center;margin-bottom:18px;padding:15px;background:rgba(255,255,255,0.1);border-radius:14px}
+.modal-desc{font-size:1.05rem;margin-bottom:16px;line-height:1.5}
+.modal-details{background:rgba(0,0,0,0.25);border-radius:12px;padding:14px;margin-bottom:16px;font-size:0.95rem}
+.modal-details p{margin:6px 0}
+.modal-details strong{color:#a1c4fd}
+.modal-example{background:#0f0f23;border-radius:10px;padding:14px;font-family:'Consolas',monospace;font-size:0.9rem;color:#84fab0;border-left:4px solid #84fab0;margin-bottom:20px;overflow-x:auto;white-space:pre-wrap}
+.modal-close{display:block;width:100%;padding:14px;background:var(--success);color:#222;border:none;border-radius:12px;font-weight:700;font-size:1.05rem;cursor:pointer;transition:transform 0.2s}
+.modal-close:hover{transform:scale(1.02)}
+
+/* === АДАПТИВНОСТЬ === */
+@media (max-width:768px){
+.nav-links{position:fixed;top:68px;left:0;right:0;background:rgba(0,0,0,0.96);flex-direction:column;padding:18px;gap:12px;transform:translateY(-160%);transition:transform 0.3s ease;z-index:999}
+.nav-links.active{transform:translateY(0)}
+.nav-toggle{display:block}
+.btn{width:100%;justify-content:center}
+.btn-secondary{margin-left:0;margin-top:10px}
+.game-area{height:320px}
+.basket{width:100px;height:50px}
+.tags-grid{grid-template-columns:1fr}
+.tag-card{max-width:400px;margin:0 auto}
+.html-info-grid{grid-template-columns:1fr}
+}
+@media (max-width:480px){
+.hero-content h1{font-size:2rem}
+.game-area{height:280px}
+.section-title{font-size:1.6rem}
+}
+
+/* === АНИМАЦИИ === */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
+.animate-on-scroll{animation:fadeInUp 0.55s ease forwards;opacity:0}
+.animate-on-scroll:nth-child(1){animation-delay:0.1s}
+.animate-on-scroll:nth-child(2){animation-delay:0.2s}
+.animate-on-scroll:nth-child(3){animation-delay:0.3s}
+.animate-on-scroll:nth-child(4){animation-delay:0.4s}
+.visible{opacity:1}
+</style>
 </head>
 <body>
-    <!-- Шапка -->
-    <header>
-        <div class="container">
-            <nav>
-                <div class="logo">vErstka</div>
-                <ul class="nav-links">
-                    <li><a href="#home">Главная</a></li>
-                    <li><a href="#game">Игра</a></li>
-                    <li><a href="#contact">Контакты</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+<!-- Шапка -->
+<header>
+<div class="container">
+<nav>
+<div class="logo">⚡ vErstka</div>
+<button class="nav-toggle" id="navToggle" aria-label="Меню">☰</button>
+<ul class="nav-links" id="navLinks">
+<li><a href="#home">🏠 Главная</a></li>
+<li><a href="#html-info">📖 Об HTML</a></li>
+<li><a href="#game">🎮 Игра</a></li>
+<li><a href="#rules">📋 Правила</a></li>
+<li><a href="#tags">📚 Библиотека</a></li>
+<li><a href="#contact">📬 Контакты</a></li>
+</ul>
+</nav>
+</div>
+</header>
 
-    <!-- Герой секция -->
-    <section class="hero" id="home">
-        <div class="container">
-            <div class="hero-content">
-                <h1>Вёрстка с душой</h1>
-                <p>Поймай как можно больше HTML-тегов за 30 секунд</p>
-                <a href="#game" class="btn">Поехали!</a>
-            </div>
-        </div>
-    </section>
+<!-- Герой -->
+<section class="hero" id="home">
+<div class="container">
+<div class="hero-content">
+<h1>Учи HTML через игру ✨</h1>
+<p>Лови падающие теги, набирай очки и разблокируй <strong>карточки с подробным объяснением</strong> каждого элемента!</p>
+<div class="hero-highlight">
+🎁 <strong>Набери 600+ очков</strong> за игру → разблокируй новую карточку тега в библиотеке!
+</div>
+<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+<a href="#game" class="btn">🚀 Начать игру</a>
+<a href="#html-info" class="btn btn-secondary">📖 Об HTML</a>
+</div>
+</div>
+</div>
+</section>
 
-    <!-- Секция игры -->
-    <section class="game-section" id="game">
-        <div class="container">
-            <h2 class="section-title">Поймай HTML-тег!</h2>
-            <div class="game-container">
-                <div class="game-info">
-                    <div class="score">Счет: <span id="score">0</span></div>
-                    <div class="timer">Время: <span id="timer">30</span>с</div>
-                </div>
-                <div class="game-area" id="gameArea">
-                    <div class="basket" id="basket">🧺 Корзина</div>
-                </div>
-                <div class="message" id="message">⚡ Двигай мышкой, чтобы ловить теги ⚡</div>
-                <div class="controls">
-                    <button class="btn" id="startBtn">Старт</button>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- Инфо об HTML -->
+<section class="html-info-section" id="html-info">
+<div class="container">
+<h2 class="section-title">📖 Что такое HTML?</h2>
+<p class="section-subtitle">Основы веб-разработки, которые ты изучишь через игру</p>
+<div class="html-info-grid">
+<div class="html-info-card animate-on-scroll">
+<h3>🌐 HTML — язык веба</h3>
+<p><strong>HTML (HyperText Markup Language)</strong> — это стандартный язык разметки для создания веб-страниц. Он определяет структуру и содержание страницы с помощью тегов.</p>
+<ul>
+<li>Создан в 1993 году Тимом Бернерсом-Ли</li>
+<li>Работает в связке с CSS и JavaScript</li>
+<li>Интерпретируется всеми браузерами</li>
+</ul>
+</div>
+<div class="html-info-card animate-on-scroll">
+<h3>🏷️ Что такое теги?</h3>
+<p><strong>Теги</strong> — это команды для браузера в угловых скобках. Они говорят браузеру, как отображать контент.</p>
+<ul>
+<li>Большинство тегов парные: <code>&lt;p&gt;текст&lt;/p&gt;</code></li>
+<li>Некоторые одиночные: <code>&lt;img&gt;</code>, <code>&lt;br&gt;</code></li>
+<li>Теги могут иметь атрибуты: <code>&lt;a href="#"&gt;</code></li>
+</ul>
+</div>
+<div class="html-info-card animate-on-scroll">
+<h3>📦 Категории тегов</h3>
+<p>Все HTML-теги делятся на группы по назначению:</p>
+<ul>
+<li>🏗️ <strong>Структура:</strong> div, header, footer, section</li>
+<li>📝 <strong>Текст:</strong> p, h1-h6, span, strong</li>
+<li>🎨 <strong>Медиа:</strong> img, video, audio, canvas</li>
+<li>📋 <strong>Формы:</strong> input, button, form, select</li>
+</ul>
+</div>
+<div class="html-info-card animate-on-scroll">
+<h3>🚀 Зачем учить HTML?</h3>
+<p>HTML — первый шаг в веб-разработке. Без него невозможно создать сайт.</p>
+<ul>
+<li>Основа для изучения CSS и JavaScript</li>
+<li>Нужен для любой веб-профессии</li>
+<li>Понимание структуры сайтов</li>
+<li>Возможность создавать свои проекты</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
 
-    <!-- Футер -->
-    <footer id="contact">
-        <div class="container">
-            <h2>Свяжитесь со мной</h2>
-            <p>Пацук Владислав номер: 89655777961</p>
-        </div>
-    </footer>
+<!-- Игра -->
+<section class="game-section" id="game">
+<div class="container">
+<h2 class="section-title">🎮 Поймай тег!</h2>
+<p class="section-subtitle">Управляй корзиной, лови теги и разблокируй знания</p>
+<div class="game-container">
+<div class="game-header">
+<div class="game-stats">
+<div>📊 Счёт: <span id="score">0</span></div>
+<div>⏱️ Время: <span id="timer">30</span>с</div>
+</div>
+<div class="target-badge">🎯 Цель: 600+ для разблокировки</div>
+</div>
+<div class="game-area" id="gameArea" role="application" aria-label="Игровое поле">
+<div class="basket" id="basket">🧺</div>
+</div>
+<div class="message" id="message" role="status" aria-live="polite">
+👆 Двигай курсором или пальцем для ловли тегов
+</div>
+<div class="controls">
+<button class="btn" id="startBtn">▶️ Старт</button>
+<button class="btn btn-secondary" id="pauseBtn" disabled>⏸️ Пауза</button>
+</div>
+<div class="game-hint">
+💡 <strong>Совет:</strong> Обычные теги = +10, ⭐ редкие = +25. Комбо от 5 подряд = ×2 к очкам!
+</div>
+</div>
+</div>
+</section>
 
-    <script>
-        (function() {
-            // Элементы игры
-            const gameArea = document.getElementById('gameArea');
-            const basket = document.getElementById('basket');
-            const scoreElement = document.getElementById('score');
-            const timerElement = document.getElementById('timer');
-            const messageElement = document.getElementById('message');
-            const startBtn = document.getElementById('startBtn');
-            
-            // Параметры игры
-            const INIT_TIME = 30;           // ⏱️ время игры уменьшено вдвое (было 60)
-            const TAG_WIDTH = 70;            // примерная ширина тега (для ограничения появления)
-            const BASKET_WIDTH = 120;         // ширина корзины (должна совпадать с CSS)
-            
-            // Переменные состояния
-            let score = 0;
-            let timeLeft = INIT_TIME;
-            let gameActive = false;
-            
-            // Идентификаторы интервалов
-            let timerInterval = null;
-            let spawnInterval = null;
-            let updateInterval = null;
-            
-            // Массив падающих тегов
-            let fallingTags = [];
-            
-            // Набор тегов
-            const htmlTags = ['<div>', '<p>', '<span>', '<h1>', '<a>', '<img>', '<ul>', '<li>', '<header>', '<footer>'];
-            
-            // ---- ОПТИМИЗАЦИЯ: корректная проверка столкновения (пересечение прямоугольников) ----
-            function isColliding(rect1, rect2) {
-                return rect1.left < rect2.right &&
-                       rect1.right > rect2.left &&
-                       rect1.top < rect2.bottom &&
-                       rect1.bottom > rect2.top;
-            }
-            
-            // ---- Создание нового тега ----
-            function createTag() {
-                if (!gameActive) return;
-                
-                const tag = document.createElement('div');
-                tag.className = 'falling-tag';
-                tag.textContent = htmlTags[Math.floor(Math.random() * htmlTags.length)];
-                
-                // Случайная позиция по горизонтали, чтобы тег не вылезал за края
-                const maxLeft = Math.max(0, gameArea.offsetWidth - TAG_WIDTH);
-                const left = Math.floor(Math.random() * maxLeft);
-                
-                tag.style.left = left + 'px';
-                tag.style.top = '0px';
-                
-                gameArea.appendChild(tag);
-                
-                fallingTags.push({
-                    element: tag,
-                    left: left,
-                    top: 0,
-                    speed: 1 + Math.random() * 2.5,  // небольшая вариация скорости
-                    width: tag.offsetWidth || TAG_WIDTH,
-                    height: tag.offsetHeight || 30
-                });
-            }
-            
-            // ---- Обновление позиций и проверка столкновений ----
-            function updateGame() {
-                if (!gameActive) return;
-                
-                // Получаем актуальные координаты корзины относительно gameArea
-                const basketRect = basket.getBoundingClientRect();
-                const gameAreaRect = gameArea.getBoundingClientRect();
-                
-                // Пересчитываем координаты корзины внутри gameArea
-                const basketInGame = {
-                    left: basketRect.left - gameAreaRect.left,
-                    right: basketRect.right - gameAreaRect.left,
-                    top: basketRect.top - gameAreaRect.top,
-                    bottom: basketRect.bottom - gameAreaRect.top
-                };
-                
-                for (let i = fallingTags.length - 1; i >= 0; i--) {
-                    const t = fallingTags[i];
-                    
-                    // Двигаем вниз
-                    t.top += t.speed;
-                    t.element.style.top = t.top + 'px';
-                    
-                    // Получаем прямоугольник тега (приблизительно, можно точнее через getBoundingClientRect, но для скорости оставим так)
-                    const tagRect = {
-                        left: t.left,
-                        right: t.left + t.width,
-                        top: t.top,
-                        bottom: t.top + t.height
-                    };
-                    
-                    // Проверка на столкновение с корзиной
-                    if (isColliding(tagRect, basketInGame)) {
-                        // Пойман!
-                        score += 10;
-                        scoreElement.textContent = score;
-                        messageElement.textContent = '🔥 +10 очков!';
-                        
-                        t.element.remove();
-                        fallingTags.splice(i, 1);
-                        continue;
-                    }
-                    
-                    // Если тег улетел за нижнюю границу
-                    if (t.top > gameArea.offsetHeight) {
-                        t.element.remove();
-                        fallingTags.splice(i, 1);
-                    }
-                }
-            }
-            
-            // ---- Очистка игры ----
-            function clearGame() {
-                // Удаляем все теги из DOM и массива
-                fallingTags.forEach(t => t.element.remove());
-                fallingTags = [];
-                
-                // Сбрасываем счёт и таймер на экране
-                score = 0;
-                timeLeft = INIT_TIME;
-                scoreElement.textContent = score;
-                timerElement.textContent = timeLeft;
-                
-                // Сообщение
-                messageElement.textContent = '⚡ Двигай мышкой, чтобы ловить теги ⚡';
-            }
-            
-            // ---- Завершение игры ----
-            function stopGame() {
-                gameActive = false;
-                
-                // Очищаем все интервалы
-                if (timerInterval) clearInterval(timerInterval);
-                if (spawnInterval) clearInterval(spawnInterval);
-                if (updateInterval) clearInterval(updateInterval);
-                
-                timerInterval = spawnInterval = updateInterval = null;
-                
-                startBtn.disabled = false;
-                startBtn.textContent = 'Играть снова';
-                
-                // Финальное сообщение
-                let finalMsg = `⏰ Игра окончена! Ваш счёт: ${score}. `;
-                if (score >= 200) finalMsg += 'Ты — гуру верстки!';
-                else if (score >= 100) finalMsg += 'Неплохо, но можно ещё!';
-                else finalMsg += 'Попробуй ещё разок!';
-                
-                messageElement.textContent = finalMsg;
-            }
-            
-            // ---- Старт игры ----
-            function startGame() {
-                if (gameActive) return;
-                
-                // Подчищаем предыдущие запуски
-                clearGame();
-                
-                gameActive = true;
-                startBtn.disabled = true;
-                startBtn.textContent = 'Игра идёт...';
-                
-                // Таймер обратного отсчёта
-                timerInterval = setInterval(() => {
-                    timeLeft--;
-                    timerElement.textContent = timeLeft;
-                    
-                    if (timeLeft <= 0) {
-                        stopGame();
-                    }
-                }, 1000);
-                
-                // Появление новых тегов каждые 0.8 секунды (чуть чаще для динамики)
-                spawnInterval = setInterval(() => {
-                    createTag();
-                }, 800);
-                
-                // Обновление игры (~60 FPS)
-                updateInterval = setInterval(() => {
-                    updateGame();
-                }, 16); // ~60 кадров в секунду
-            }
-            
-            // ---- Управление корзиной мышью ----
-            function moveBasket(e) {
-                if (!gameActive) return;
-                
-                const gameAreaRect = gameArea.getBoundingClientRect();
-                const basketWidth = basket.offsetWidth;
-                
-                // Вычисляем новую позицию левого края корзины
-                let newLeft = e.clientX - gameAreaRect.left - basketWidth / 2;
-                
-                // Ограничиваем, чтобы корзина не выходила за границы поля
-                newLeft = Math.max(0, Math.min(newLeft, gameArea.offsetWidth - basketWidth));
-                
-                basket.style.left = newLeft + 'px';
-            }
-            
-            // ---- Обработчики событий ----
-            gameArea.addEventListener('mousemove', moveBasket);
-            
-            // Также учитываем касания для мобильных устройств (опционально)
-            gameArea.addEventListener('touchmove', (e) => {
-                e.preventDefault();
-                const touch = e.touches[0];
-                moveBasket(touch);
-            });
-            
-            startBtn.addEventListener('click', startGame);
-            
-            // При изменении размера окна пересчитываем положение корзины (чтобы не уехала за границы)
-            window.addEventListener('resize', () => {
-                if (!gameActive) return;
-                // Просто сбрасываем left в допустимые пределы, но оставляем примерно ту же пропорцию
-                const gameAreaRect = gameArea.getBoundingClientRect();
-                const basketWidth = basket.offsetWidth;
-                const currentLeft = parseInt(basket.style.left) || 0;
-                const maxLeft = gameArea.offsetWidth - basketWidth;
-                if (currentLeft > maxLeft) {
-                    basket.style.left = maxLeft + 'px';
-                }
-            });
-            
-            // Дополнительно: отключаем контекстное меню на поле игры (чтобы не мешало)
-            gameArea.addEventListener('contextmenu', (e) => e.preventDefault());
-        })();
-    </script>
+<!-- Правила -->
+<section class="rules-section" id="rules">
+<div class="container">
+<h2 class="section-title">📋 Как играть?</h2>
+<div class="rules-grid">
+<div class="rule-card animate-on-scroll">
+<span class="rule-icon">🎯</span>
+<h3>Цель</h3>
+<p>Набери <strong>600+ очков</strong> за 30 секунд, чтобы разблокировать карточку с объяснением HTML-тега в библиотеке.</p>
+</div>
+<div class="rule-card animate-on-scroll">
+<span class="rule-icon">🖱️</span>
+<h3>Управление</h3>
+<p>Двигай мышкой (ПК) или пальцем (телефон). Корзина следует за курсором — лови падающие теги!</p>
+</div>
+<div class="rule-card animate-on-scroll">
+<span class="rule-icon">⭐</span>
+<h3>Редкие теги</h3>
+<p>Свечение = редкий тег! Даёт <strong>+25 очков</strong> вместо +10. Шанс появления ~15%.</p>
+</div>
+<div class="rule-card animate-on-scroll">
+<span class="rule-icon">🔥</span>
+<h3>Комбо-система</h3>
+<p>5+ пойманных тегов подряд = <strong>×2 к очкам</strong>. Пропуск сбрасывает комбо.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Библиотека тегов -->
+<section class="tags-section" id="tags">
+<div class="container">
+<h2 class="section-title">📚 Библиотека HTML-тегов</h2>
+<p class="section-subtitle">Подробная информация о каждом теге: синтаксис, атрибуты, примеры использования</p>
+<div class="tags-intro">
+🔓 <strong>Замки на карточках</strong> означают, что тег ещё не разблокирован.<br>
+✅ <strong>Разблокированные карточки</strong> показывают полную информацию о теге.<br>
+🎮 <strong>Набери 600+ очков</strong> в игре, чтобы разблокировать новый тег!
+</div>
+<div class="tags-categories">
+<button class="category-btn active" data-category="all">Все теги</button>
+<button class="category-btn" data-category="structure">🏗️ Структура</button>
+<button class="category-btn" data-category="text">📝 Текст</button>
+<button class="category-btn" data-category="media">🎨 Медиа</button>
+<button class="category-btn" data-category="form">📋 Формы</button>
+</div>
+<div class="tags-grid" id="tagsGrid"></div>
+</div>
+</section>
+
+<!-- Футер -->
+<footer id="contact">
+<div class="container">
+<div class="footer-content">
+<h2>📬 Контакты</h2>
+<p>Создано для изучения веб-разработки</p>
+<div class="contact-info">
+<p>👨‍💻 <strong>Пацук Владислав</strong></p>
+<p>✉️ <a href="mailto:dev@example.com">evklidotto78@gmail.com</a></p>
+</div>
+</footer>
+
+<!-- Модалка новой карты -->
+<div class="modal" id="newCardModal" role="dialog" aria-modal="true">
+<div class="modal-content">
+<div class="modal-header">🎉 Тег разблокирован!</div>
+<div class="modal-body">
+<div class="modal-tag" id="modalTagName">&lt;tag&gt;</div>
+<p class="modal-desc" id="modalDesc">Описание тега</p>
+<div class="modal-details">
+<p><strong>Категория:</strong> <span id="modalCategory">—</span></p>
+<p><strong>Тип:</strong> <span id="modalType">—</span></p>
+<p><strong>Атрибуты:</strong> <span id="modalAttrs">—</span></p>
+</div>
+<div class="modal-example" id="modalExample">&lt;tag&gt;пример&lt;/tag&gt;</div>
+<button class="modal-close" id="modalClose">✓ Понял, в библиотеку!</button>
+</div>
+</div>
+</div>
+
+<script>
+(function(){'use strict';
+// === КОНФИГУРАЦИЯ ===
+const CONFIG=Object.freeze({TIME:30,TAG_W:78,TAG_H:36,BASKET_W:120,SPAWN_MS:850,UPDATE_MS:16,RARE_CHANCE:0.15,COMBO_MIN:5,COMBO_MULT:2,REWARD_SCORE:600});
+// === ДАННЫЕ ТЕГОВ ===
+const TAGS_DATA=Object.freeze([
+{id:'div',name:'<div>',category:'structure',desc:'Универсальный блочный контейнер.',type:'Блочный',attrs:'class, id, style',example:'<div class="container">\n  <p>Контент</p>\n</div>',points:10,rare:false},
+{id:'p',name:'<p>',category:'text',desc:'Абзац текста.',type:'Блочный',attrs:'class, id',example:'<p>Текст абзаца</p>',points:10,rare:false},
+{id:'span',name:'<span>',category:'text',desc:'Строчный контейнер.',type:'Строчный',attrs:'class, id',example:'<span>текст</span>',points:10,rare:false},
+{id:'h1',name:'<h1>',category:'text',desc:'Заголовок первого уровня.',type:'Блочный',attrs:'class, id',example:'<h1>Заголовок</h1>',points:10,rare:false},
+{id:'a',name:'<a>',category:'media',desc:'Гиперссылка.',type:'Строчный',attrs:'href, target',example:'<a href="#">Link</a>',points:10,rare:false},
+{id:'img',name:'<img>',category:'media',desc:'Изображение.',type:'Строчный',attrs:'src, alt',example:'<img src="pic.jpg" alt="Описание">',points:25,rare:true},
+{id:'ul',name:'<ul>',category:'structure',desc:'Маркированный список.',type:'Блочный',attrs:'class, id',example:'<ul>\n  <li>Пункт 1</li>\n</ul>',points:10,rare:false},
+{id:'li',name:'<li>',category:'structure',desc:'Элемент списка.',type:'Блочный',attrs:'class',example:'<li>Пункт</li>',points:10,rare:false},
+{id:'header',name:'<header>',category:'structure',desc:'Семантическая шапка.',type:'Блочный',attrs:'class, id',example:'<header>\n  <h1>Сайт</h1>\n</header>',points:10,rare:false},
+{id:'footer',name:'<footer>',category:'structure',desc:'Семантический подвал.',type:'Блочный',attrs:'class, id',example:'<footer>\n  <p>© 2026</p>\n</footer>',points:10,rare:false},
+{id:'video',name:'<video>',category:'media',desc:'Видео-контент.',type:'Блочный',attrs:'src, controls',example:'<video controls>\n  <source src="movie.mp4">\n</video>',points:25,rare:true},
+{id:'strong',name:'<strong>',category:'text',desc:'Жирный текст.',type:'Строчный',attrs:'class',example:'<strong>важно</strong>',points:10,rare:false},
+{id:'input',name:'<input>',category:'form',desc:'Поле ввода.',type:'Строчный',attrs:'type, name',example:'<input type="text" name="field">',points:10,rare:false},
+{id:'button',name:'<button>',category:'form',desc:'Кнопка.',type:'Блочный',attrs:'type, class',example:'<button type="submit">Click</button>',points:10,rare:false},
+{id:'canvas',name:'<canvas>',category:'media',desc:'Холст для графики.',type:'Блочный',attrs:'width, height',example:'<canvas id="c" width="800" height="600"></canvas>',points:25,rare:true},
+{id:'article',name:'<article>',category:'structure',desc:'Самостоятельный контент.',type:'Блочный',attrs:'class, id',example:'<article>\n  <h2>Статья</h2>\n  <p>Текст...</p>\n</article>',points:10,rare:false}
+]);
+// === ЭЛЕМЕНТЫ DOM ===
+const elements={};
+// === СОСТОЯНИЕ ===
+let state={score:0,time:CONFIG.TIME,active:false,paused:false,combo:0,missed:0,intervals:{timer:null,spawn:null,update:null}};
+let falling=[];
+let unlocked=[];
+let awardedTags=new Set();
+// === БЕЗОПАСНАЯ ЗАГРУЗКА ДАННЫХ ===
+function safeLoad(key,defaultValue){try{const item=localStorage.getItem(key);return item?JSON.parse(item):defaultValue;}catch(e){console.warn('Ошибка загрузки localStorage:',key,e);return defaultValue;}}
+function safeSave(key,data){try{localStorage.setItem(key,JSON.stringify(data));}catch(e){console.warn('Ошибка сохранения localStorage:',key,e);}}
+// === ИНИЦИАЛИЗАЦИЯ ===
+function init(){cacheElements();loadData();renderTagsLibrary();setupEvents();if(elements.basket){elements.basket.style.left='50%';}}
+function cacheElements(){elements.gameArea=document.getElementById('gameArea');elements.basket=document.getElementById('basket');elements.score=document.getElementById('score');elements.timer=document.getElementById('timer');elements.message=document.getElementById('message');elements.startBtn=document.getElementById('startBtn');elements.pauseBtn=document.getElementById('pauseBtn');elements.tagsGrid=document.getElementById('tagsGrid');elements.modal=document.getElementById('newCardModal');elements.modalClose=document.getElementById('modalClose');}
+function loadData(){
+// === ОБНУЛЕНИЕ КАРТОЧЕК ===
+// Используем новый ключ localStorage для сброса прогресса
+unlocked=safeLoad('verstka_unlocked_v2',[]);
+awardedTags=new Set(safeLoad('verstka_awarded_v2',[]));
+}
+// === ОТРИСОВКА БИБЛИОТЕКИ ===
+function renderTagsLibrary(filter='all'){if(!elements.tagsGrid)return;elements.tagsGrid.innerHTML='';TAGS_DATA.filter(t=>filter==='all'||t.category===filter).forEach(tag=>{const isUnlocked=unlocked.includes(tag.id);const card=document.createElement('div');card.className='tag-card'+(tag.rare?' rare':'')+(!isUnlocked?' locked':'');card.innerHTML='<div class="tag-header"><div class="tag-name">'+escapeHtml(tag.name)+'</div><span class="tag-category">'+getCategoryName(tag.category)+'</span></div><div class="tag-body"><p class="tag-desc">'+escapeHtml(tag.desc)+'</p><div class="tag-details"><strong>Тип:</strong> '+escapeHtml(tag.type)+'<br><strong>Атрибуты:</strong> '+escapeHtml(tag.attrs)+'</div><div class="tag-example">'+escapeHtml(tag.example)+'</div></div><div class="tag-points"><span>Очки: <strong class="points">'+tag.points+'</strong></span>'+(tag.rare?'<span>⭐ Редкий</span>':'')+'</div>';elements.tagsGrid.appendChild(card);});}
+function getCategoryName(cat){const names={structure:'🏗️ Структура',text:'📝 Текст',media:'🎨 Медиа',form:'📋 Формы'};return names[cat]||cat;}
+// === МОДАЛКА ===
+function showTagModal(tag){if(!elements.modal)return;document.getElementById('modalTagName').textContent=tag.name;document.getElementById('modalDesc').textContent=tag.desc;document.getElementById('modalCategory').textContent=getCategoryName(tag.category);document.getElementById('modalType').textContent=tag.type;document.getElementById('modalAttrs').textContent=tag.attrs;document.getElementById('modalExample').textContent=tag.example;elements.modal.classList.add('active');}
+function hideModal(){if(elements.modal)elements.modal.classList.remove('active');}
+function msg(text,type=''){if(!elements.message)return;elements.message.textContent=text;elements.message.className='message'+(type?' '+type:'');}
+// === ИГРОВАЯ ЛОГИКА ===
+function random(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+function collides(a,b){return a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top;}
+function moveBasket(clientX){if(!state.active||state.paused||!elements.gameArea||!elements.basket)return;const rect=elements.gameArea.getBoundingClientRect();const bw=elements.basket.offsetWidth;let x=clientX-rect.left-bw/2;x=Math.max(0,Math.min(x,rect.width-bw));elements.basket.style.left=x+'px';}
+function spawnTag(){if(!state.active||state.paused||!elements.gameArea)return;const isRare=Math.random()<CONFIG.RARE_CHANCE;const pool=isRare?TAGS_DATA.filter(t=>t.rare):TAGS_DATA.filter(t=>!t.rare);if(pool.length===0)return;const tagData=pool[random(0,pool.length-1)];const el=document.createElement('div');el.className='falling-tag'+(isRare?' rare':'');el.textContent=tagData.name;const maxL=Math.max(0,elements.gameArea.offsetWidth-CONFIG.TAG_W);const left=random(0,maxL);el.style.left=left+'px';el.style.top='0px';elements.gameArea.appendChild(el);falling.push({el:el,left:left,top:0,speed:1.6+Math.random()*2.1,w:CONFIG.TAG_W,h:CONFIG.TAG_H,tagData:tagData});}
+function update(){if(!state.active||state.paused||!elements.gameArea||!elements.basket)return;const gRect=elements.gameArea.getBoundingClientRect();const bRect=elements.basket.getBoundingClientRect();const basketInGame={left:bRect.left-gRect.left,right:bRect.right-gRect.left,top:bRect.top-gRect.top,bottom:bRect.bottom-gRect.top};for(let i=falling.length-1;i>=0;i--){const t=falling[i];t.top+=t.speed;t.el.style.top=t.top+'px';const tagRect={left:t.left,right:t.left+t.w,top:t.top,bottom:t.top+t.h};if(collides(tagRect,basketInGame)){const base=t.tagData.points;const mult=state.combo>=CONFIG.COMBO_MIN?CONFIG.COMBO_MULT:1;const pts=base*mult;state.score+=pts;state.combo++;if(elements.score)elements.score.textContent=state.score;if(elements.basket){elements.basket.classList.add('caught');setTimeout(()=>elements.basket.classList.remove('caught'),250);}if(mult>1){msg('🔥 Комбо ×'+mult+'! +'+pts,'success');}else{msg(t.tagData.rare?'⭐ Редкий! +'+pts:'+'+pts+' очков','success');}t.el.remove();falling.splice(i,1);continue;}if(t.top>elements.gameArea.offsetHeight){state.missed++;state.combo=0;if(state.missed===1)msg('😕 Пропущено! Комбо сброшено','warning');t.el.remove();falling.splice(i,1);}}}
+// === ЗАВЕРШЕНИЕ ===
+function stopGame(){if(state.intervals.timer){clearInterval(state.intervals.timer);state.intervals.timer=null;}if(state.intervals.spawn){clearInterval(state.intervals.spawn);state.intervals.spawn=null;}if(state.intervals.update){clearInterval(state.intervals.update);state.intervals.update=null;}state.active=false;}
+function endGame(){stopGame();if(state.score>=CONFIG.REWARD_SCORE){const available=TAGS_DATA.filter(t=>!awardedTags.has(t.id));if(available.length>0){const reward=available[random(0,available.length-1)];if(!unlocked.includes(reward.id)){unlocked.push(reward.id);safeSave('verstka_unlocked_v2',unlocked);}awardedTags.add(reward.id);safeSave('verstka_awarded_v2',Array.from(awardedTags));showTagModal(reward);renderTagsLibrary();}}if(elements.startBtn){elements.startBtn.disabled=false;elements.startBtn.innerHTML='🔄 Играть снова';}if(elements.pauseBtn)elements.pauseBtn.disabled=true;let summary='⏰ Игра окончена! Счёт: '+state.score;if(state.score>=CONFIG.REWARD_SCORE){summary+=' 🎁 Тег разблокирован!';msg(summary,'reward');}else{summary+=' (нужно '+CONFIG.REWARD_SCORE+' для разблокировки)';msg(summary);}}
+// === СТАРТ ===
+function startGame(){if(state.active)return;stopGame();falling.forEach(t=>{if(t.el&&t.el.parentNode)t.el.remove();});falling=[];state={score:0,time:CONFIG.TIME,active:true,paused:false,combo:0,missed:0,intervals:{timer:null,spawn:null,update:null}};if(elements.score)elements.score.textContent='0';if(elements.timer)elements.timer.textContent=CONFIG.TIME;msg('👆 Лови теги!');if(elements.startBtn){elements.startBtn.disabled=true;elements.startBtn.innerHTML='⏳ Игра...';}if(elements.pauseBtn)elements.pauseBtn.disabled=false;state.intervals.timer=setInterval(function(){if(!state.paused){state.time--;if(elements.timer)elements.timer.textContent=state.time;if(state.time<=0)endGame();}},1000);state.intervals.spawn=setInterval(spawnTag,CONFIG.SPAWN_MS);state.intervals.update=setInterval(update,CONFIG.UPDATE_MS);}
+function togglePause(){if(!state.active)return;state.paused=!state.paused;if(elements.pauseBtn){elements.pauseBtn.innerHTML=state.paused?'▶️ Продолжить':'⏸️ Пауза';}msg(state.paused?'⏸️ Пауза':'▶️ Вперёд!',state.paused?'warning':'');}
+// === СОБЫТИЯ ===
+function setupEvents(){if(elements.gameArea){elements.gameArea.addEventListener('mousemove',function(e){moveBasket(e.clientX);});elements.gameArea.addEventListener('touchstart',function(e){e.preventDefault();moveBasket(e.touches[0].clientX);},{passive:false});elements.gameArea.addEventListener('touchmove',function(e){e.preventDefault();moveBasket(e.touches[0].clientX);},{passive:false});elements.gameArea.addEventListener('contextmenu',function(e){e.preventDefault();});}if(elements.modalClose){elements.modalClose.addEventListener('click',hideModal);}if(elements.modal){elements.modal.addEventListener('click',function(e){if(e.target===elements.modal)hideModal();});}const navToggle=document.getElementById('navToggle');const navLinks=document.getElementById('navLinks');if(navToggle&&navLinks){navToggle.addEventListener('click',function(){navLinks.classList.toggle('active');});navLinks.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){navLinks.classList.remove('active');});});}document.querySelectorAll('.category-btn').forEach(function(btn){btn.addEventListener('click',function(){document.querySelectorAll('.category-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');renderTagsLibrary(btn.dataset.category);});});if(elements.startBtn)elements.startBtn.addEventListener('click',startGame);if(elements.pauseBtn)elements.pauseBtn.addEventListener('click',togglePause);document.querySelectorAll('a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();const target=document.querySelector(this.getAttribute('href'));if(target)target.scrollIntoView({behavior:'smooth'});});});const obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.1});document.querySelectorAll('.animate-on-scroll').forEach(function(el){obs.observe(el);});}
+function escapeHtml(text){if(!text)return'';const div=document.createElement('div');div.textContent=text;return div.innerHTML;}
+// Запуск
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}
+})();
+</script>
 </body>
 </html>
